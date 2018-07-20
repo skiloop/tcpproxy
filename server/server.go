@@ -6,6 +6,10 @@ import (
 	"fmt"
 	"time"
 	"github.com/op/go-logging"
+	"strings"
+	"errors"
+	"regexp"
+	"strconv"
 )
 
 // Server which listen on a specific port and accept tcp connection
@@ -21,6 +25,23 @@ type Server struct {
 	log logging.Logger
 
 	listener net.Listener
+}
+
+func ParseMapString(m string) (localHost string, localPort int64, remoteHost string, remotePort int64, err error) {
+	vars := strings.Split(m, ":")
+	regex, _ := regexp.Compile("^\\d+$")
+	if len(vars) < 4 || !regex.MatchString(vars[1]) || !regex.MatchString(vars[3]) {
+		return "", 0, "", 0, errors.New("format error")
+	}
+	localPort, err = strconv.ParseInt(vars[1], 10, 64)
+	if err != nil {
+		return "", 0, "", 0, err
+	}
+	remotePort, err = strconv.ParseInt(vars[1], 10, 64)
+	if err != nil {
+		return "", 0, "", 0, err
+	}
+	return vars[0], localPort, vars[2], remotePort, nil
 }
 
 func NewServer(localHost string, localPort int64, remoteHost string, remotePort int64, enableKeepAlive bool, keepAlivePeriod time.Duration, logger *logging.Logger) Server {
