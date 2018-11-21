@@ -37,7 +37,7 @@ func ParseMapString(m string) (localHost string, localPort int64, remoteHost str
 	if err != nil {
 		return "", 0, "", 0, err
 	}
-	remotePort, err = strconv.ParseInt(vars[1], 10, 64)
+	remotePort, err = strconv.ParseInt(vars[3], 10, 64)
 	if err != nil {
 		return "", 0, "", 0, err
 	}
